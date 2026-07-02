@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { router, Link } from '@inertiajs/react';
 import MerchantLayout from '@/Layouts/MerchantLayout';
 import Badge from '@/Components/ui/Badge';
-import Timeline from '@/Components/ui/Timeline';
 
 const digitsOnly = (v) => v.replace(/\D/g, '');
 
@@ -40,7 +39,7 @@ function StatusIcon({ status }) {
     );
 }
 
-export default function Status({ ipn: initialIpn = '', payment = null, timeline = [], searched = false }) {
+export default function Status({ ipn: initialIpn = '', payment = null, searched = false }) {
     const [ipn, setIpn] = useState(initialIpn);
 
     const handleSearch = (e) => {
@@ -134,7 +133,7 @@ export default function Status({ ipn: initialIpn = '', payment = null, timeline 
                                         ? 'Your IPN payment has been successfully resolved.'
                                         : payment.resolution_status === 'reviewing'
                                         ? 'Your payment receipt has been received and is being processed.'
-                                        : 'Your submission is pending accountant verification.'}
+                                        : 'Your submission is pending verification.'}
                                 </p>
                             </div>
 
@@ -161,13 +160,6 @@ export default function Status({ ipn: initialIpn = '', payment = null, timeline 
                             </div>
                         </div>
 
-                        {/* Timeline */}
-                        {timeline.length > 0 && (
-                            <div className="card p-6">
-                                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Activity Timeline</h3>
-                                <Timeline items={timeline} />
-                            </div>
-                        )}
                     </div>
                 )}
             </div>
