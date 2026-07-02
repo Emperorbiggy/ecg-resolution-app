@@ -8,25 +8,40 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Rename marshals table to merchants
-        Schema::rename('marshals', 'merchants');
+        // Only needed when upgrading an existing DB that still has the old 'marshals' table
+        if (Schema::hasTable('marshals')) {
+            Schema::rename('marshals', 'merchants');
+        }
 
-        // On payment_resolutions: rename marshal_id to merchant_id and marshal_name to merchant_name
-        Schema::table('payment_resolutions', function (Blueprint $table) {
-            $table->renameColumn('marshal_id', 'merchant_id');
-            $table->renameColumn('marshal_name', 'merchant_name');
-        });
+        if (Schema::hasColumn('payment_resolutions', 'marshal_id')) {
+            Schema::table('payment_resolutions', function (Blueprint $table) {
+                $table->renameColumn('marshal_id', 'merchant_id');
+            });
+        }
+
+        if (Schema::hasColumn('payment_resolutions', 'marshal_name')) {
+            Schema::table('payment_resolutions', function (Blueprint $table) {
+                $table->renameColumn('marshal_name', 'merchant_name');
+            });
+        }
     }
 
     public function down(): void
     {
-        // Reverse: rename merchants back to marshals
-        Schema::rename('merchants', 'marshals');
+        if (Schema::hasTable('merchants') && !Schema::hasTable('marshals')) {
+            Schema::rename('merchants', 'marshals');
+        }
 
-        // Reverse column renames
-        Schema::table('payment_resolutions', function (Blueprint $table) {
-            $table->renameColumn('merchant_id', 'marshal_id');
-            $table->renameColumn('merchant_name', 'marshal_name');
-        });
+        if (Schema::hasColumn('payment_resolutions', 'merchant_id')) {
+            Schema::table('payment_resolutions', function (Blueprint $table) {
+                $table->renameColumn('merchant_id', 'marshal_id');
+            });
+        }
+
+        if (Schema::hasColumn('payment_resolutions', 'merchant_name')) {
+            Schema::table('payment_resolutions', function (Blueprint $table) {
+                $table->renameColumn('merchant_name', 'marshal_name');
+            });
+        }
     }
 };
