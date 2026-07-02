@@ -1,0 +1,1 @@
+import{r as o}from"./app-DKiONyy2.js";const e="oirs_merchant";function a(){if(typeof window>"u")return null;try{const t=localStorage.getItem(e);return t?JSON.parse(t):null}catch{return null}}function u(){const[t,r]=o.useState(a);return{merchant:t,save:n=>{try{localStorage.setItem(e,JSON.stringify(n)),r(n)}catch{}},clear:()=>{localStorage.removeItem(e),r(null)}}}export{u};
