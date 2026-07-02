@@ -2,6 +2,7 @@
     "name": "OIRS Merchant Portal",
     "short_name": "OIRS",
     "description": "Osun State Internal Revenue Service — Merchant Payment Submission Portal",
+    "id": "/",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",

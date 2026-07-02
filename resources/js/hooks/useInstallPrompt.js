@@ -6,25 +6,32 @@ function isIosSafari() {
     return /iphone|ipad|ipod/i.test(ua) && /safari/i.test(ua) && !/crios|fxios|opios/i.test(ua);
 }
 
-function isStandalone() {
+function isMerchantPwaInstalled() {
+    // Only suppress when running as the merchant PWA itself (start_url = /)
+    // Not when running inside the staff PWA which also has scope /
     if (typeof window === 'undefined') return false;
-    return window.navigator.standalone === true ||
+    const standalone = window.navigator.standalone === true ||
         window.matchMedia('(display-mode: standalone)').matches;
+    // If standalone AND we're at the root (not a staff route), merchant is installed
+    const path = window.location.pathname;
+    const isStaffRoute = path.startsWith('/login') || path.startsWith('/accountant') ||
+        path.startsWith('/resolution-officer') || path.startsWith('/super-admin');
+    return standalone && !isStaffRoute;
 }
 
 export function useInstallPrompt() {
     const [prompt, setPrompt] = useState(null);
-    const [installed, setInstalled] = useState(false);
+    const [installed, setInstalled] = useState(() => isMerchantPwaInstalled());
     const [ios] = useState(() => isIosSafari());
 
     useEffect(() => {
-        if (isStandalone()) { setInstalled(true); return; }
+        if (installed) return;
 
         const handler = (e) => { e.preventDefault(); setPrompt(e); };
         window.addEventListener('beforeinstallprompt', handler);
         window.addEventListener('appinstalled', () => setInstalled(true));
         return () => window.removeEventListener('beforeinstallprompt', handler);
-    }, []);
+    }, [installed]);
 
     const install = async () => {
         if (!prompt) return;
