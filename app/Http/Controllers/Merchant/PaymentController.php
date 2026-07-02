@@ -93,6 +93,7 @@ class PaymentController extends Controller
         ]);
     }
 
+
     public function show(PaymentResolution $payment): Response
     {
         $timeline = AuditLogService::getTimeline($payment->ipn);
